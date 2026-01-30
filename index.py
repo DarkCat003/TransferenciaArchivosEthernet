@@ -1,6 +1,7 @@
 import socket
 import threading
 import tkinter as tk
+import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import base64
 import os
@@ -103,31 +104,62 @@ def send_data(encoded):
     s.sendall(header + encoded)
     s.close()
 
+# Apariencia global
+ctk.set_appearance_mode("dark")      # "light" o "system"
+ctk.set_default_color_theme("blue")  # "green", "dark-blue", etc.
+
 # ---------- GUI ----------
 def log(msg):
     output.insert(tk.END, msg + "\n")
     output.see(tk.END)
 
-root = tk.Tk()
+root = ctk.CTk()
 root.title("Comunicación Ethernet Directa")
+root.geometry("420x520")
 
-tk.Label(root, text="IP destino / local:").pack()
-entry_ip = tk.Entry(root)
-entry_ip.pack()
+# IP
+label_ip = ctk.CTkLabel(root, text="IP destino / local:")
+label_ip.pack(pady=(10, 0))
 
-tk.Label(root, text="Llave (frase):").pack()
-entry_key = tk.Entry(root, show="*")
-entry_key.pack()
+entry_ip = ctk.CTkEntry(root, width=300)
+entry_ip.pack(pady=5)
 
-tk.Button(root, text="Iniciar Servidor (Recibir)", command=start_server).pack(pady=5)
+# Llave
+label_key = ctk.CTkLabel(root, text="Llave (frase):")
+label_key.pack(pady=(10, 0))
 
-text_box = tk.Text(root, height=5)
-text_box.pack()
+entry_key = ctk.CTkEntry(root, width=300, show="*")
+entry_key.pack(pady=5)
 
-tk.Button(root, text="Enviar Texto", command=send_text).pack(pady=2)
-tk.Button(root, text="Enviar Archivo", command=send_file).pack(pady=2)
+# Botón servidor
+btn_server = ctk.CTkButton(
+    root,
+    text="Iniciar Servidor (Recibir)",
+    command=start_server
+)
+btn_server.pack(pady=10)
 
-output = tk.Text(root, height=10)
-output.pack()
+# Caja de texto para enviar
+text_box = tk.Text(root, height=5, width=45)
+text_box.pack(pady=5)
+
+# Botones de envío
+btn_send_text = ctk.CTkButton(
+    root,
+    text="Enviar Texto",
+    command=send_text
+)
+btn_send_text.pack(pady=4)
+
+btn_send_file = ctk.CTkButton(
+    root,
+    text="Enviar Archivo",
+    command=send_file
+)
+btn_send_file.pack(pady=4)
+
+# Output / log
+output = tk.Text(root, height=10, width=45)
+output.pack(pady=10)
 
 root.mainloop()
